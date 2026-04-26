@@ -1,0 +1,733 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ICT Mastery — Trade The Smart Money Way</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --gold: #C9A84C;
+    --gold-light: #E8CC7A;
+    --dark: #080C10;
+    --dark-2: #0D1318;
+    --dark-3: #141C24;
+    --border: rgba(201,168,76,0.2);
+    --text: #B8C4CC;
+    --white: #EEF2F5;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--dark);
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    overflow-x: hidden;
+  }
+
+  /* Animated grid background */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image:
+      linear-gradient(rgba(201,168,76,0.04) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(201,168,76,0.04) 1px, transparent 1px);
+    background-size: 60px 60px;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  /* Candlestick chart background animation */
+  .chart-bg {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 200px;
+    z-index: 0;
+    opacity: 0.12;
+    display: flex;
+    align-items: flex-end;
+    gap: 6px;
+    padding: 0 20px;
+  }
+
+  .candle {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0;
+    animation: flicker 3s ease-in-out infinite;
+  }
+
+  .candle .wick {
+    width: 1px;
+    background: var(--gold);
+  }
+  .candle .body {
+    width: 10px;
+    border-radius: 1px;
+  }
+  .candle.bull .body { background: var(--gold); }
+  .candle.bear .body { background: #4a6080; }
+
+  @keyframes flicker {
+    0%, 100% { opacity: 0.6; }
+    50% { opacity: 1; }
+  }
+
+  /* NAV */
+  nav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 100;
+    padding: 20px 40px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: linear-gradient(to bottom, rgba(8,12,16,0.95), transparent);
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid var(--border);
+  }
+
+  .logo {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 28px;
+    letter-spacing: 3px;
+    color: var(--gold);
+    text-shadow: 0 0 30px rgba(201,168,76,0.5);
+  }
+
+  .logo span { color: var(--white); }
+
+  nav a {
+    color: var(--text);
+    text-decoration: none;
+    font-size: 13px;
+    font-weight: 500;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    transition: color 0.2s;
+  }
+  nav a:hover { color: var(--gold); }
+
+  .nav-links { display: flex; gap: 32px; align-items: center; }
+
+  .btn-nav {
+    background: var(--gold);
+    color: var(--dark) !important;
+    padding: 8px 20px;
+    border-radius: 2px;
+    font-weight: 600 !important;
+    transition: background 0.2s, transform 0.1s !important;
+  }
+  .btn-nav:hover { background: var(--gold-light) !important; transform: translateY(-1px); }
+
+  /* HERO */
+  .hero {
+    position: relative;
+    z-index: 1;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    padding: 120px 24px 80px;
+  }
+
+  .tag {
+    display: inline-block;
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--gold);
+    border: 1px solid var(--border);
+    padding: 6px 16px;
+    border-radius: 2px;
+    margin-bottom: 32px;
+    background: rgba(201,168,76,0.05);
+    animation: fadeUp 0.8s ease both;
+  }
+
+  h1 {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(56px, 10vw, 120px);
+    line-height: 0.95;
+    letter-spacing: 2px;
+    color: var(--white);
+    margin-bottom: 8px;
+    animation: fadeUp 0.8s 0.15s ease both;
+  }
+
+  h1 .gold { color: var(--gold); text-shadow: 0 0 60px rgba(201,168,76,0.4); }
+
+  .subtitle {
+    font-size: clamp(15px, 2vw, 18px);
+    color: var(--text);
+    max-width: 540px;
+    line-height: 1.7;
+    margin: 24px auto 48px;
+    animation: fadeUp 0.8s 0.3s ease both;
+  }
+
+  .hero-btns {
+    display: flex;
+    gap: 16px;
+    flex-wrap: wrap;
+    justify-content: center;
+    animation: fadeUp 0.8s 0.45s ease both;
+  }
+
+  .btn-primary {
+    background: var(--gold);
+    color: var(--dark);
+    padding: 16px 40px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 14px;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    text-decoration: none;
+    border-radius: 2px;
+    transition: all 0.2s;
+    border: none;
+    cursor: pointer;
+    display: inline-block;
+  }
+  .btn-primary:hover {
+    background: var(--gold-light);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 30px rgba(201,168,76,0.35);
+  }
+
+  .btn-secondary {
+    background: transparent;
+    color: var(--white);
+    padding: 16px 40px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 14px;
+    font-weight: 600;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    text-decoration: none;
+    border-radius: 2px;
+    border: 1px solid var(--border);
+    transition: all 0.2s;
+    display: inline-block;
+  }
+  .btn-secondary:hover {
+    border-color: var(--gold);
+    color: var(--gold);
+    transform: translateY(-2px);
+  }
+
+  /* STATS */
+  .stats {
+    position: relative; z-index: 1;
+    display: flex;
+    justify-content: center;
+    gap: 0;
+    flex-wrap: wrap;
+    border-top: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+    background: rgba(13,19,24,0.8);
+  }
+
+  .stat {
+    padding: 40px 60px;
+    text-align: center;
+    border-right: 1px solid var(--border);
+    flex: 1;
+    min-width: 180px;
+  }
+  .stat:last-child { border-right: none; }
+
+  .stat-num {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 48px;
+    color: var(--gold);
+    line-height: 1;
+  }
+
+  .stat-label {
+    font-size: 12px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--text);
+    margin-top: 6px;
+  }
+
+  /* SECTIONS */
+  section {
+    position: relative; z-index: 1;
+    padding: 100px 24px;
+    max-width: 1100px;
+    margin: 0 auto;
+  }
+
+  .section-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 16px;
+  }
+
+  h2 {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(40px, 6vw, 64px);
+    letter-spacing: 2px;
+    color: var(--white);
+    line-height: 1;
+    margin-bottom: 20px;
+  }
+
+  .section-desc {
+    font-size: 16px;
+    line-height: 1.75;
+    color: var(--text);
+    max-width: 580px;
+    margin-bottom: 60px;
+  }
+
+  /* CONCEPT CARDS */
+  .concepts-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 1px;
+    background: var(--border);
+    border: 1px solid var(--border);
+  }
+
+  .concept-card {
+    background: var(--dark-2);
+    padding: 36px 32px;
+    transition: background 0.25s;
+    cursor: default;
+  }
+  .concept-card:hover { background: var(--dark-3); }
+
+  .concept-icon {
+    font-size: 28px;
+    margin-bottom: 16px;
+    display: block;
+  }
+
+  .concept-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 22px;
+    letter-spacing: 1.5px;
+    color: var(--white);
+    margin-bottom: 12px;
+  }
+
+  .concept-desc {
+    font-size: 14px;
+    line-height: 1.7;
+    color: var(--text);
+  }
+
+  .concept-tag {
+    display: inline-block;
+    margin-top: 16px;
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 2px;
+    color: var(--gold);
+    text-transform: uppercase;
+    border: 1px solid var(--border);
+    padding: 3px 10px;
+    border-radius: 1px;
+  }
+
+  /* HOW IT WORKS */
+  .steps {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    border: 1px solid var(--border);
+  }
+
+  .step {
+    display: flex;
+    align-items: flex-start;
+    gap: 32px;
+    padding: 40px 40px;
+    border-bottom: 1px solid var(--border);
+    transition: background 0.2s;
+  }
+  .step:last-child { border-bottom: none; }
+  .step:hover { background: rgba(201,168,76,0.03); }
+
+  .step-num {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 56px;
+    color: var(--gold);
+    opacity: 0.3;
+    line-height: 1;
+    min-width: 60px;
+  }
+
+  .step-content h3 {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 24px;
+    letter-spacing: 1.5px;
+    color: var(--white);
+    margin-bottom: 10px;
+  }
+
+  .step-content p {
+    font-size: 14px;
+    line-height: 1.75;
+    color: var(--text);
+    max-width: 500px;
+  }
+
+  /* CTA BANNER */
+  .cta-banner {
+    position: relative; z-index: 1;
+    background: linear-gradient(135deg, rgba(201,168,76,0.12), rgba(201,168,76,0.04));
+    border-top: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+    padding: 80px 24px;
+    text-align: center;
+  }
+
+  .cta-banner h2 { margin-bottom: 12px; }
+  .cta-banner p { margin: 0 auto 40px; max-width: 480px; font-size: 16px; line-height: 1.7; }
+
+  /* CONTACT */
+  .contact-box {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 24px;
+    flex-wrap: wrap;
+    margin-top: 40px;
+  }
+
+  .contact-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-family: 'DM Mono', monospace;
+    font-size: 14px;
+    color: var(--gold);
+    border: 1px solid var(--border);
+    padding: 14px 24px;
+    border-radius: 2px;
+    background: rgba(201,168,76,0.05);
+    text-decoration: none;
+    transition: all 0.2s;
+  }
+  .contact-item:hover {
+    background: rgba(201,168,76,0.12);
+    border-color: var(--gold);
+    transform: translateY(-2px);
+  }
+
+  /* FOOTER */
+  footer {
+    position: relative; z-index: 1;
+    text-align: center;
+    padding: 40px 24px;
+    border-top: 1px solid var(--border);
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: rgba(184,196,204,0.4);
+  }
+
+  /* REDIRECT OVERLAY */
+  #redirect-overlay {
+    position: fixed;
+    inset: 0;
+    background: var(--dark);
+    z-index: 9999;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 24px;
+    animation: fadeOut 0.6s 2.8s ease forwards;
+  }
+
+  #redirect-overlay .logo {
+    font-size: 40px;
+    letter-spacing: 6px;
+    animation: pulse 1s ease-in-out infinite;
+  }
+
+  @keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.5; }
+  }
+
+  .redirect-text {
+    font-family: 'DM Mono', monospace;
+    font-size: 12px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--text);
+  }
+
+  .redirect-bar {
+    width: 200px;
+    height: 2px;
+    background: var(--dark-3);
+    border-radius: 1px;
+    overflow: hidden;
+  }
+  .redirect-fill {
+    height: 100%;
+    background: var(--gold);
+    width: 0%;
+    animation: load 2.5s ease forwards;
+    border-radius: 1px;
+  }
+
+  @keyframes load {
+    to { width: 100%; }
+  }
+
+  @keyframes fadeOut {
+    to { opacity: 0; pointer-events: none; }
+  }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(24px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* DIVIDER */
+  .divider {
+    position: relative; z-index: 1;
+    height: 1px;
+    background: var(--border);
+    max-width: 100%;
+  }
+
+  @media (max-width: 600px) {
+    nav { padding: 16px 20px; }
+    .nav-links { gap: 16px; }
+    .stat { padding: 30px 20px; }
+    .step { flex-direction: column; gap: 12px; padding: 28px 24px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- LOADING / REDIRECT OVERLAY -->
+<div id="redirect-overlay">
+  <div class="logo">ICT <span>MASTERY</span></div>
+  <div class="redirect-text">Loading your learning portal...</div>
+  <div class="redirect-bar"><div class="redirect-fill"></div></div>
+</div>
+
+<!-- CANDLESTICK BG -->
+<div class="chart-bg" id="chartBg"></div>
+
+<!-- NAV -->
+<nav>
+  <div class="logo">ICT <span>MASTERY</span></div>
+  <div class="nav-links">
+    <a href="#concepts">Concepts</a>
+    <a href="#how">How It Works</a>
+    <a href="tel:0746381874" class="btn-nav">📞 Contact</a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="tag">⚡ Inner Circle Trader Education</div>
+  <h1>TRADE LIKE<br><span class="gold">SMART MONEY</span></h1>
+  <p class="subtitle">Master ICT concepts — from Order Blocks to Liquidity Sweeps — and learn to read the market the way institutional traders do.</p>
+  <div class="hero-btns">
+    <a href="#concepts" class="btn-primary">Start Learning</a>
+    <a href="tel:0746381874" class="btn-secondary">📞 0746 381 874</a>
+  </div>
+</div>
+
+<!-- STATS BAR -->
+<div class="stats">
+  <div class="stat">
+    <div class="stat-num">20+</div>
+    <div class="stat-label">ICT Concepts</div>
+  </div>
+  <div class="stat">
+    <div class="stat-num">100%</div>
+    <div class="stat-label">Free to Learn</div>
+  </div>
+  <div class="stat">
+    <div class="stat-num">24/7</div>
+    <div class="stat-label">Market Insight</div>
+  </div>
+  <div class="stat">
+    <div class="stat-num">1-ON-1</div>
+    <div class="stat-label">Mentorship</div>
+  </div>
+</div>
+
+<!-- CONCEPTS -->
+<section id="concepts">
+  <div class="section-label">// Core Curriculum</div>
+  <h2>ICT CONCEPTS<br>EXPLAINED</h2>
+  <p class="section-desc">Every key concept taught by Michael J. Huddleston — simplified, structured, and applied to real markets.</p>
+
+  <div class="concepts-grid">
+    <div class="concept-card">
+      <span class="concept-icon">🏦</span>
+      <div class="concept-title">Order Blocks</div>
+      <p class="concept-desc">Identify the last down/up candle before a strong institutional move. These zones act as magnets for price to revisit and react.</p>
+      <span class="concept-tag">Foundational</span>
+    </div>
+    <div class="concept-card">
+      <span class="concept-icon">💧</span>
+      <div class="concept-title">Liquidity</div>
+      <p class="concept-desc">Understand where stop losses cluster — above highs and below lows — and how institutions hunt these pools before reversing.</p>
+      <span class="concept-tag">Advanced</span>
+    </div>
+    <div class="concept-card">
+      <span class="concept-icon">⚖️</span>
+      <div class="concept-title">Fair Value Gaps</div>
+      <p class="concept-desc">Three-candle imbalances where price moves so fast it leaves inefficiency. Price seeks to fill these gaps during retracements.</p>
+      <span class="concept-tag">Intermediate</span>
+    </div>
+    <div class="concept-card">
+      <span class="concept-icon">🔮</span>
+      <div class="concept-title">Breaker Blocks</div>
+      <p class="concept-desc">A failed order block that transforms into a breaker. When price sweeps a high/low and the OB fails, a breaker is born.</p>
+      <span class="concept-tag">Advanced</span>
+    </div>
+    <div class="concept-card">
+      <span class="concept-icon">🎯</span>
+      <div class="concept-title">Market Structure</div>
+      <p class="concept-desc">Learn to read Higher Highs, Higher Lows, and structural shifts (CHoCH & BOS) to stay aligned with the trend.</p>
+      <span class="concept-tag">Foundational</span>
+    </div>
+    <div class="concept-card">
+      <span class="concept-icon">🕐</span>
+      <div class="concept-title">Killzones & Sessions</div>
+      <p class="concept-desc">London, New York, and Asian killzones — timing your entries around high-probability windows of institutional activity.</p>
+      <span class="concept-tag">Strategy</span>
+    </div>
+    <div class="concept-card">
+      <span class="concept-icon">📐</span>
+      <div class="concept-title">Optimal Trade Entry</div>
+      <p class="concept-desc">The OTE retracement zone (61.8%–79%) based on Fibonacci, used by ICT to pinpoint high-precision entry levels.</p>
+      <span class="concept-tag">Intermediate</span>
+    </div>
+    <div class="concept-card">
+      <span class="concept-icon">🌊</span>
+      <div class="concept-title">Mitigation Blocks</div>
+      <p class="concept-desc">After a failed order block, price returns to mitigate the imbalance. Learn to identify and trade these re-entries.</p>
+      <span class="concept-tag">Advanced</span>
+    </div>
+    <div class="concept-card">
+      <span class="concept-icon">🔄</span>
+      <div class="concept-title">Power of 3 (AMD)</div>
+      <p class="concept-desc">Accumulation → Manipulation → Distribution. The 3-phase daily model that institutions use to move markets.</p>
+      <span class="concept-tag">Strategy</span>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- HOW IT WORKS -->
+<section id="how">
+  <div class="section-label">// Your Journey</div>
+  <h2>HOW TO<br>GET STARTED</h2>
+  <p class="section-desc">A clear path from beginner to consistently profitable — with personal guidance every step of the way.</p>
+
+  <div class="steps">
+    <div class="step">
+      <div class="step-num">01</div>
+      <div class="step-content">
+        <h3>Learn the Foundations</h3>
+        <p>Start with market structure, sessions, and liquidity. Understand how the market really moves before placing a single trade.</p>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num">02</div>
+      <div class="step-content">
+        <h3>Study ICT Concepts</h3>
+        <p>Work through Order Blocks, FVGs, Breakers, and OTEs with real chart examples. Each concept builds on the last.</p>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num">03</div>
+      <div class="step-content">
+        <h3>Practice on a Demo Account</h3>
+        <p>Apply everything you've learned risk-free. Mark up charts, anticipate moves, and build your personal trading model.</p>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num">04</div>
+      <div class="step-content">
+        <h3>Get Personal Mentorship</h3>
+        <p>Reach out directly to review your charts, get feedback, and fast-track your progress with 1-on-1 guidance.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA BANNER -->
+<div class="cta-banner">
+  <div class="section-label">// Ready to Begin?</div>
+  <h2>START YOUR<br><span style="color:var(--gold)">ICT JOURNEY</span></h2>
+  <p>Have questions? Want a personalised study plan? Reach out directly — mentorship is available for serious students.</p>
+  <a href="tel:0746381874" class="btn-primary" style="font-size:16px; padding: 18px 50px;">📞 Call 0746 381 874</a>
+
+  <div class="contact-box">
+    <a href="tel:0746381874" class="contact-item">
+      📱 0746 381 874
+    </a>
+    <a href="https://wa.me/0746381874" class="contact-item" target="_blank">
+      💬 WhatsApp Us
+    </a>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<footer>
+  &copy; 2026 ICT Mastery &nbsp;|&nbsp; Smart Money Education &nbsp;|&nbsp; 0746 381 874
+</footer>
+
+<script>
+  // Generate candlestick background
+  const chartBg = document.getElementById('chartBg');
+  const candles = [
+    {h:80, b:50, t:'bull'}, {h:90, b:40, t:'bear'}, {h:100, b:65, t:'bull'},
+    {h:85, b:55, t:'bull'}, {h:95, b:30, t:'bear'}, {h:70, b:45, t:'bull'},
+    {h:120, b:80, t:'bull'}, {h:100, b:60, t:'bear'}, {h:110, b:75, t:'bull'},
+    {h:90, b:50, t:'bear'}, {h:80, b:40, t:'bear'}, {h:95, b:65, t:'bull'},
+    {h:115, b:85, t:'bull'}, {h:105, b:55, t:'bear'}, {h:90, b:60, t:'bull'},
+    {h:80, b:35, t:'bear'}, {h:100, b:70, t:'bull'}, {h:85, b:45, t:'bull'},
+    {h:95, b:60, t:'bull'}, {h:75, b:30, t:'bear'}, {h:88, b:58, t:'bull'},
+  ];
+
+  candles.forEach((c, i) => {
+    const div = document.createElement('div');
+    div.className = `candle ${c.t}`;
+    div.style.animationDelay = `${i * 0.15}s`;
+    const wickTop = document.createElement('div');
+    wickTop.className = 'wick';
+    wickTop.style.height = `${c.h - c.b}px`;
+    const body = document.createElement('div');
+    body.className = 'body';
+    body.style.height = `${c.b}px`;
+    div.appendChild(wickTop);
+    div.appendChild(body);
+    chartBg.appendChild(div);
+  });
+
+  // Remove overlay after animation
+  setTimeout(() => {
+    const overlay = document.getElementById('redirect-ove
